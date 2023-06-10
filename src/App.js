@@ -1,25 +1,35 @@
-import React from 'react'
-import { getDatabase, ref, set } from "firebase/database"
-import { app } from "./Firebase"
+import React, { useState, useEffect } from 'react';
+import SignUp from './Pages/SignUp';
+import Login from './Pages/Login';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
-const db = getDatabase(app)
+const auth = getAuth();
 
 const App = () => {
+  const [User, setUser] = useState(null);
 
-  const PutData = () => {
-    set(ref(db, "users/priya"), {
-      id: 1,
-      Name: "Priya",
-      Age: 20
-    })
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else setUser(null);
+    });
+  }, []);
+
+  if (User === null) {
+    return (
+      <div className="App">
+        <SignUp />
+        <Login />
+      </div>
+    );
   }
-
   return (
-    <div className='App'>
-      <h1>My Firebase App</h1>
-      <button onClick={PutData}>Put Data</button>
+    <div>
+      <h1>Hello {User.email}</h1>
+      <button onClick={() => signOut(auth)}>Sign Out</button>
     </div>
-  )
-}
-
-export default App
+  );
+};
+export default App;
