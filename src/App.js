@@ -9,6 +9,7 @@ import {
   query,
   where,
   getDocs,
+  updateDoc,
 } from 'firebase/firestore';
 
 const Firestore = getFirestore(app);
@@ -40,6 +41,12 @@ const App = () => {
     const Snapshot = await getDocs(q);
     Snapshot.forEach((data) => console.log(data.data()));
   };
+  const updateDocument = async () => {
+    const docRef = doc(Firestore, 'cities/4s9kgCH9ysdQikObBN6w');
+    await updateDoc(docRef, {
+      name: 'New Delhi',
+    });
+  };
 
   return (
     <div>
@@ -48,6 +55,7 @@ const App = () => {
       <button onClick={writeSubData}>Put Sub Data</button>
       <button onClick={getDocument}>Get Document</button>
       <button onClick={getDocumentByQuery}>Get Document by Query</button>
+      <button onClick={updateDocument}>Update</button>
     </div>
   );
 };
